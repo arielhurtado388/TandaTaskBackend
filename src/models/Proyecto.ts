@@ -1,0 +1,40 @@
+import mongoose, { Schema, Document, PopulatedDoc, Types } from "mongoose";
+import { ITarea } from "./Tarea";
+
+export interface IProyecto extends Document {
+  nombreProyecto: string;
+  nombreCliente: string;
+  descripcion: string;
+  tareas: PopulatedDoc<ITarea & Document>[];
+}
+
+const ProyectoSchema: Schema = new Schema(
+  {
+    nombreProyecto: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    nombreCliente: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    descripcion: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    tareas: [
+      {
+        type: Types.ObjectId,
+        ref: "Tarea",
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+const Proyecto = mongoose.model<IProyecto>("Proyecto", ProyectoSchema);
+
+export default Proyecto;
