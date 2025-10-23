@@ -37,4 +37,11 @@ router.post(
   AutenticacionController.iniciarSesion
 );
 
+router.post(
+  "/requerir-codigo",
+  body("correo").isEmail().withMessage("El correo no es válido"),
+  handleErroresEntrada,
+  AutenticacionController.requerirCodigoConfirmacion
+);
+
 export default router;
