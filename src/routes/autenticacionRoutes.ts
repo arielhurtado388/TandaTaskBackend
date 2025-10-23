@@ -22,4 +22,11 @@ router.post(
   AutenticacionController.crearCuenta
 );
 
+router.post(
+  "/confirmar-cuenta",
+  body("token").notEmpty().withMessage("El token es obligatorio"),
+  handleErroresEntrada,
+  AutenticacionController.confirmarCuenta
+);
+
 export default router;
