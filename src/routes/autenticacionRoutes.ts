@@ -29,4 +29,12 @@ router.post(
   AutenticacionController.confirmarCuenta
 );
 
+router.post(
+  "/iniciar-sesion",
+  body("correo").isEmail().withMessage("El correo no es válido"),
+  body("contrasena").notEmpty().withMessage("La contraseña es obligatoria"),
+  handleErroresEntrada,
+  AutenticacionController.iniciarSesion
+);
+
 export default router;
