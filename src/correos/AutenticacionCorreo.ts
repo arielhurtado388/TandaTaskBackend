@@ -15,10 +15,10 @@ export class AutenticacionCorreo {
       text: "Confirma tu cuenta",
       html: `
       <p>
-      Hola, ${usuario.nombre} has creado tu cuenta en TandaTask, ya casi está todo listo, solo debes confirmar tu cuenta 
+      Hola ${usuario.nombre}, has creado tu cuenta en TandaTask, ya casi está todo listo, solo debes confirmar tu cuenta 
       </p>
       <p>Visita el siguiente enlace:</p>
-      <a href="">Confirmar cuenta</a>
+      <a href="${process.env.FRONTEND_URL}/auth/confirmar-cuenta">Confirmar cuenta</a>
       <p>e ingresa el código: <b>${usuario.token}</b></p>
       <p>Este código expira en 10 minutos</p>
       `,
