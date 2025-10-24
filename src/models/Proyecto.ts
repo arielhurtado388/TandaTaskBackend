@@ -1,11 +1,13 @@
 import mongoose, { Schema, Document, PopulatedDoc, Types } from "mongoose";
 import { ITarea } from "./Tarea";
+import { IUsuario } from "./Usuario";
 
 export interface IProyecto extends Document {
   nombreProyecto: string;
   nombreCliente: string;
   descripcion: string;
   tareas: PopulatedDoc<ITarea & Document>[];
+  propietario: PopulatedDoc<IUsuario & Document>;
 }
 
 const ProyectoSchema: Schema = new Schema(
@@ -31,6 +33,10 @@ const ProyectoSchema: Schema = new Schema(
         ref: "Tarea",
       },
     ],
+    propietario: {
+      type: Types.ObjectId,
+      ref: "Usuario",
+    },
   },
   { timestamps: true }
 );

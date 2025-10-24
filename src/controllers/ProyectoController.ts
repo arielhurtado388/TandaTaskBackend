@@ -5,7 +5,8 @@ export class ProyectoController {
   static crearProyecto = async (req: Request, res: Response) => {
     const proyecto = new Proyecto(req.body);
 
-    console.log(req.usuario);
+    // Asignar propietario
+    proyecto.propietario = req.usuario.id;
 
     try {
       await proyecto.save();
@@ -17,7 +18,9 @@ export class ProyectoController {
 
   static obtenerProyectos = async (req: Request, res: Response) => {
     try {
-      const proyectos = await Proyecto.find({});
+      const proyectos = await Proyecto.find({
+        $or: [{ propietario: { $in: req.usuario.id } }],
+      });
       res.json(proyectos);
     } catch (error) {
       console.log(error);
@@ -32,6 +35,12 @@ export class ProyectoController {
         const error = new Error("Proyecto no encontrado");
         return res.status(404).json({ error: error.message });
       }
+
+      if (proyecto.propietario.toString() !== req.usuario.id.toString()) {
+        const error = new Error("Acción no válida");
+        return res.status(404).json({ error: error.message });
+      }
+
       res.json(proyecto);
     } catch (error) {
       console.log(error);
@@ -46,6 +55,14 @@ export class ProyectoController {
         const error = new Error("Proyecto no encontrado");
         return res.status(404).json({ error: error.message });
       }
+
+      if (proyecto.propietario.toString() !== req.usuario.id.toString()) {
+        const error = new Error(
+          "Solo el propietario puede actualizar un proyecto"
+        );
+        return res.status(404).json({ error: error.message });
+      }
+
       proyecto.nombreCliente = req.body.nombreCliente;
       proyecto.nombreProyecto = req.body.nombreProyecto;
       proyecto.descripcion = req.body.descripcion;
@@ -65,6 +82,14 @@ export class ProyectoController {
         const error = new Error("Proyecto no encontrado");
         return res.status(404).json({ error: error.message });
       }
+
+      if (proyecto.propietario.toString() !== req.usuario.id.toString()) {
+        const error = new Error(
+          "Solo el propietario puede eliminar un proyecto"
+        );
+        return res.status(404).json({ error: error.message });
+      }
+
       await proyecto.deleteOne();
       res.send("Proyecto eliminado");
     } catch (error) {
