@@ -176,4 +176,41 @@ export class AutenticacionController {
       res.status(500).json({ error: "Hubo un error" });
     }
   };
+
+  static validarToken = async (req: Request, res: Response) => {
+    try {
+      const { token } = req.body;
+
+      const existeToken = await Token.findOne({ token });
+      if (!existeToken) {
+        const error = new Error("El código no es válido");
+        return res.status(404).json({ error: error.message });
+      }
+
+      res.send("El token es válido, define tu nueva contraseña");
+    } catch (error) {
+      res.status(500).json({ error: "Hubo un error" });
+    }
+  };
+
+  static actualizarContrasenaConToken = async (req: Request, res: Response) => {
+    try {
+      const { token } = req.params;
+
+      const existeToken = await Token.findOne({ token });
+      if (!existeToken) {
+        const error = new Error("El código no es válido");
+        return res.status(404).json({ error: error.message });
+      }
+
+      const usuario = await Usuario.findById(existeToken.usuario);
+      usuario.contrasena = await hashContrasena(req.body.contrasena);
+
+      await Promise.allSettled([usuario.save(), existeToken.deleteOne()]);
+
+      res.send("La contraseña se modificó correctamente");
+    } catch (error) {
+      res.status(500).json({ error: "Hubo un error" });
+    }
+  };
 }

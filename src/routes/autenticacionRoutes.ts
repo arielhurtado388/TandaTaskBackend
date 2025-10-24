@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AutenticacionController } from "../controllers/AutenticacionController";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { handleErroresEntrada } from "../middleware/validacion";
 
 const router = Router();
@@ -49,6 +49,29 @@ router.post(
   body("correo").isEmail().withMessage("El correo no es válido"),
   handleErroresEntrada,
   AutenticacionController.olvideContrasena
+);
+
+router.post(
+  "/validar-token",
+  body("token").notEmpty().withMessage("El token es obligatorio"),
+  handleErroresEntrada,
+  AutenticacionController.validarToken
+);
+
+router.post(
+  "/actualizar-contrasena/:token",
+  param("token").isNumeric().withMessage("El token no es válido"),
+  body("contrasena")
+    .isLength({ min: 8 })
+    .withMessage("La contraseña debe tener al menos 8 caracteres"),
+  body("contrasena_confirmacion").custom((value, { req }) => {
+    if (value !== req.body.contrasena) {
+      throw new Error("Las contraseñas no son iguales");
+    }
+    return true;
+  }),
+  handleErroresEntrada,
+  AutenticacionController.actualizarContrasenaConToken
 );
 
 export default router;
