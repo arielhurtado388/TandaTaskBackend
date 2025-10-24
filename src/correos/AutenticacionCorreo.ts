@@ -37,7 +37,7 @@ export class AutenticacionCorreo {
       Hola ${usuario.nombre}, has solicitado reestablecer tu contraseña. 
       </p>
       <p>Visita el siguiente enlace:</p>
-      <a href="${process.env.FRONTEND_URL}/auth/olvide">Reestablecer contraseña</a>
+      <a href="${process.env.FRONTEND_URL}/auth/nueva-contrasena">Reestablecer contraseña</a>
       <p>e ingresa el código: <b>${usuario.token}</b></p>
       <p>Este código expira en 10 minutos</p>
       `,
