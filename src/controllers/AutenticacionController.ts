@@ -141,7 +141,37 @@ export class AutenticacionController {
 
       await Promise.allSettled([usuario.save(), token.save()]);
 
-      res.send("Se envió un nuevo código");
+      res.send("Se envió un nuevo código a tu correo");
+    } catch (error) {
+      res.status(500).json({ error: "Hubo un error" });
+    }
+  };
+
+  static olvideContrasena = async (req: Request, res: Response) => {
+    try {
+      const { correo } = req.body;
+      const usuario = await Usuario.findOne({ correo });
+
+      if (!usuario) {
+        const error = new Error("El usuario no está registrado");
+        return res.status(404).json({ error: error.message });
+      }
+
+      // Generar token
+      const token = new Token();
+      token.token = generarToken();
+      token.usuario = usuario.id;
+
+      await token.save();
+
+      // Enviar correo
+      AutenticacionCorreo.enviarCorreoResetearContrasena({
+        correo: usuario.correo,
+        nombre: usuario.nombre,
+        token: token.token,
+      });
+
+      res.send("Revisa tu correo y sigue las instrucciones");
     } catch (error) {
       res.status(500).json({ error: "Hubo un error" });
     }

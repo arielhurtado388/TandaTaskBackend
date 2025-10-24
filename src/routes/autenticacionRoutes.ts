@@ -44,4 +44,11 @@ router.post(
   AutenticacionController.requerirCodigoConfirmacion
 );
 
+router.post(
+  "/olvide",
+  body("correo").isEmail().withMessage("El correo no es válido"),
+  handleErroresEntrada,
+  AutenticacionController.olvideContrasena
+);
+
 export default router;
