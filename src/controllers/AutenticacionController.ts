@@ -5,6 +5,7 @@ import Token from "../models/Token";
 import { generarToken } from "../utils/token";
 import { transporter } from "../config/nodemailer";
 import { AutenticacionCorreo } from "../correos/AutenticacionCorreo";
+import { generarJWT } from "../utils/jwt";
 
 export class AutenticacionController {
   static crearCuenta = async (req: Request, res: Response) => {
@@ -106,7 +107,10 @@ export class AutenticacionController {
         const error = new Error("La contraseña es incorrecta");
         return res.status(401).json({ error: error.message });
       }
-      res.send("Autenticado...");
+
+      const token = generarJWT({ id: usuario.id });
+
+      res.send(token);
     } catch (error) {
       res.status(500).json({ error: "Hubo un error" });
     }
