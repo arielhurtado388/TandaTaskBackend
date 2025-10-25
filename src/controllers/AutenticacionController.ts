@@ -217,4 +217,8 @@ export class AutenticacionController {
       res.status(500).json({ error: "Hubo un error" });
     }
   };
+
+  static usuario = async (req: Request, res: Response) => {
+    return res.json(req.usuario);
+  };
 }

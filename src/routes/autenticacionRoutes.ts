@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AutenticacionController } from "../controllers/AutenticacionController";
 import { body, param } from "express-validator";
 import { handleErroresEntrada } from "../middleware/validacion";
+import { autenticado } from "../middleware/auth";
 
 const router = Router();
 
@@ -73,5 +74,7 @@ router.post(
   handleErroresEntrada,
   AutenticacionController.actualizarContrasenaConToken
 );
+
+router.get("/usuario", autenticado, AutenticacionController.usuario);
 
 export default router;
