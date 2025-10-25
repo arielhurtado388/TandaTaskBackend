@@ -8,6 +8,7 @@ export interface IProyecto extends Document {
   descripcion: string;
   tareas: PopulatedDoc<ITarea & Document>[];
   propietario: PopulatedDoc<IUsuario & Document>;
+  equipo: PopulatedDoc<IUsuario & Document>[];
 }
 
 const ProyectoSchema: Schema = new Schema(
@@ -37,6 +38,12 @@ const ProyectoSchema: Schema = new Schema(
       type: Types.ObjectId,
       ref: "Usuario",
     },
+    equipo: [
+      {
+        type: Types.ObjectId,
+        ref: "Usuario",
+      },
+    ],
   },
   { timestamps: true }
 );

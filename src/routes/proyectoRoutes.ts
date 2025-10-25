@@ -6,6 +6,7 @@ import { TareaController } from "../controllers/TareaController";
 import { existeProyecto } from "../middleware/proyecto";
 import { existeTarea, tareaPerteneceAProyecto } from "../middleware/tarea";
 import { autenticado } from "../middleware/auth";
+import { EquipoController } from "../controllers/EquipoController";
 
 const router = Router();
 
@@ -106,6 +107,30 @@ router.post(
   body("estado").notEmpty().withMessage("El estado es obligatorio"),
   handleErroresEntrada,
   TareaController.actualizarEstado
+);
+
+// Rutas para equipo
+router.post(
+  "/:idProyecto/equipo/buscar",
+  body("correo").isEmail().toLowerCase().withMessage("El correo no es válido"),
+  handleErroresEntrada,
+  EquipoController.buscarMiembroPorCorreo
+);
+
+router.get("/:idProyecto/equipo", EquipoController.obtenerMiembrosEquipo);
+
+router.post(
+  "/:idProyecto/equipo",
+  body("id").isMongoId().withMessage("El id no es válido"),
+  handleErroresEntrada,
+  EquipoController.agregarMiembroPorId
+);
+
+router.delete(
+  "/:idProyecto/equipo",
+  body("id").isMongoId().withMessage("El id no es válido"),
+  handleErroresEntrada,
+  EquipoController.eliminarMiembroPorId
 );
 
 export default router;
