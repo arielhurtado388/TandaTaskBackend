@@ -16,6 +16,11 @@ export class EquipoController {
       return res.status(404).json({ error: error.message });
     }
 
+    if (usuario.id.toString() === req.proyecto.propietario.toString()) {
+      const error = new Error("El propietario ya es parte del proyecto");
+      return res.status(409).json({ error: error.message });
+    }
+
     res.json(usuario);
   };
 
@@ -59,17 +64,19 @@ export class EquipoController {
   };
 
   static eliminarMiembroPorId = async (req: Request, res: Response) => {
-    const { id } = req.body;
+    const { idUsuario } = req.params;
 
     if (
-      !req.proyecto.equipo.some((equipo) => equipo.toString() === id.toString())
+      !req.proyecto.equipo.some(
+        (equipo) => equipo.toString() === idUsuario.toString()
+      )
     ) {
       const error = new Error("El usuario no existe en el proyecto");
       return res.status(409).json({ error: error.message });
     }
 
     req.proyecto.equipo = req.proyecto.equipo.filter(
-      (miembro) => miembro.toString() !== id.toString()
+      (miembro) => miembro.toString() !== idUsuario.toString()
     );
 
     await req.proyecto.save();

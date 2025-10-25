@@ -127,8 +127,8 @@ router.post(
 );
 
 router.delete(
-  "/:idProyecto/equipo",
-  body("id").isMongoId().withMessage("El id no es válido"),
+  "/:idProyecto/equipo/:idUsuario",
+  param("idUsuario").isMongoId().withMessage("El id no es válido"),
   handleErroresEntrada,
   EquipoController.eliminarMiembroPorId
 );
