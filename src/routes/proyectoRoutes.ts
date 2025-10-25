@@ -4,7 +4,11 @@ import { body, param } from "express-validator";
 import { handleErroresEntrada } from "../middleware/validacion";
 import { TareaController } from "../controllers/TareaController";
 import { existeProyecto } from "../middleware/proyecto";
-import { existeTarea, tareaPerteneceAProyecto } from "../middleware/tarea";
+import {
+  existeTarea,
+  tareaPerteneceAProyecto,
+  tieneAutorizacion,
+} from "../middleware/tarea";
 import { autenticado } from "../middleware/auth";
 import { EquipoController } from "../controllers/EquipoController";
 
@@ -63,6 +67,7 @@ router.param("idProyecto", existeProyecto);
 
 router.post(
   "/:idProyecto/tareas",
+  tieneAutorizacion,
   body("nombre").notEmpty().withMessage("El nombre de la tarea es obligatoria"),
   body("descripcion")
     .notEmpty()
@@ -85,6 +90,7 @@ router.get(
 
 router.put(
   "/:idProyecto/tareas/:idTarea",
+  tieneAutorizacion,
   param("idTarea").isMongoId().withMessage("El id no es válido"),
   body("nombre").notEmpty().withMessage("El nombre de la tarea es obligatoria"),
   body("descripcion")
@@ -96,6 +102,7 @@ router.put(
 
 router.delete(
   "/:idProyecto/tareas/:idTarea",
+  tieneAutorizacion,
   param("idTarea").isMongoId().withMessage("El id no es válido"),
   handleErroresEntrada,
   TareaController.eliminarTarea

@@ -19,7 +19,10 @@ export class ProyectoController {
   static obtenerProyectos = async (req: Request, res: Response) => {
     try {
       const proyectos = await Proyecto.find({
-        $or: [{ propietario: { $in: req.usuario.id } }],
+        $or: [
+          { propietario: { $in: req.usuario.id } },
+          { equipo: { $in: req.usuario.id } },
+        ],
       });
       res.json(proyectos);
     } catch (error) {
@@ -36,7 +39,10 @@ export class ProyectoController {
         return res.status(404).json({ error: error.message });
       }
 
-      if (proyecto.propietario.toString() !== req.usuario.id.toString()) {
+      if (
+        proyecto.propietario.toString() !== req.usuario.id.toString() &&
+        !proyecto.equipo.includes(req.usuario.id)
+      ) {
         const error = new Error("Acción no válida");
         return res.status(404).json({ error: error.message });
       }

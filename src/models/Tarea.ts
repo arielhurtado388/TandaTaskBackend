@@ -15,6 +15,7 @@ export interface ITarea extends Document {
   descripcion: string;
   proyecto: Types.ObjectId;
   estado: EstadosTarea;
+  completadoPor: Types.ObjectId;
 }
 
 export const TareaSchema: Schema = new Schema(
@@ -37,6 +38,11 @@ export const TareaSchema: Schema = new Schema(
       type: String,
       enum: Object.values(estadosTarea),
       default: estadosTarea.PENDIENTE,
+    },
+    completadoPor: {
+      type: Types.ObjectId,
+      ref: "Usuario",
+      default: null,
     },
   },
 

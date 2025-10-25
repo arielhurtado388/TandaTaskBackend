@@ -61,6 +61,13 @@ export class TareaController {
     try {
       const { estado } = req.body;
       req.tarea.estado = estado;
+
+      if (estado === "pendiente") {
+        req.tarea.completadoPor = null;
+      } else {
+        req.tarea.completadoPor = req.usuario.id;
+      }
+
       await req.tarea.save();
       res.send("Tarea actualizada correctamente");
     } catch (error) {
