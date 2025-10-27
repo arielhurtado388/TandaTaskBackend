@@ -28,7 +28,12 @@ export class TareaController {
 
   static obtenerTareaPorId = async (req: Request, res: Response) => {
     try {
-      res.json(req.tarea);
+      const tarea = await Tarea.findById(req.tarea.id).populate({
+        path: "completadoPor.usuario",
+        select: "id nombre correo",
+      });
+
+      res.json(tarea);
     } catch (error) {
       res.status(500).json({ error: "Hubo un error" });
     }
@@ -62,11 +67,12 @@ export class TareaController {
       const { estado } = req.body;
       req.tarea.estado = estado;
 
-      if (estado === "pendiente") {
-        req.tarea.completadoPor = null;
-      } else {
-        req.tarea.completadoPor = req.usuario.id;
-      }
+      const data = {
+        usuario: req.usuario.id,
+        estado,
+      };
+
+      req.tarea.completadoPor.push(data);
 
       await req.tarea.save();
       res.send("Tarea actualizada correctamente");
