@@ -11,6 +11,7 @@ import {
 } from "../middleware/tarea";
 import { autenticado } from "../middleware/auth";
 import { EquipoController } from "../controllers/EquipoController";
+import { NotaController } from "../controllers/NotaController";
 
 const router = Router();
 
@@ -138,6 +139,26 @@ router.delete(
   param("idUsuario").isMongoId().withMessage("El id no es válido"),
   handleErroresEntrada,
   EquipoController.eliminarMiembroPorId
+);
+
+// Rutas para notas
+router.post(
+  "/:idProyecto/tareas/:idTarea/notas",
+  body("contenido").notEmpty().withMessage("El contenido es obligatorio"),
+  handleErroresEntrada,
+  NotaController.crearNota
+);
+
+router.get(
+  "/:idProyecto/tareas/:idTarea/notas",
+  NotaController.obtenerNotasDeTarea
+);
+
+router.delete(
+  "/:idProyecto/tareas/:idTarea/notas/:idNota",
+  param("idNota").isMongoId().withMessage("El id no es válido"),
+  handleErroresEntrada,
+  NotaController.eliminarNotaDeTarea
 );
 
 export default router;

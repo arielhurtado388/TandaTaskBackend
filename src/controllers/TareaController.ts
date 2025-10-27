@@ -28,10 +28,15 @@ export class TareaController {
 
   static obtenerTareaPorId = async (req: Request, res: Response) => {
     try {
-      const tarea = await Tarea.findById(req.tarea.id).populate({
-        path: "completadoPor.usuario",
-        select: "id nombre correo",
-      });
+      const tarea = await Tarea.findById(req.tarea.id)
+        .populate({
+          path: "completadoPor.usuario",
+          select: "id nombre correo",
+        })
+        .populate({
+          path: "notas",
+          populate: { path: "creadoPor", select: "id nombre correo" },
+        });
 
       res.json(tarea);
     } catch (error) {
