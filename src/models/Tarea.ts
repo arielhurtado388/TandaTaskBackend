@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
+import Nota from "./Nota";
 
 const estadosTarea = {
   PENDIENTE: "pendiente",
@@ -66,6 +67,19 @@ export const TareaSchema: Schema = new Schema(
   },
 
   { timestamps: true }
+);
+
+// Middleware
+TareaSchema.pre(
+  "deleteOne",
+  {
+    document: true,
+  },
+  async function () {
+    const idTarea = this._id;
+    if (!idTarea) return;
+    await Nota.deleteMany({ tarea: idTarea });
+  }
 );
 
 const Tarea = mongoose.model<ITarea>("Tarea", TareaSchema);

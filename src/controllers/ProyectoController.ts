@@ -54,26 +54,12 @@ export class ProyectoController {
   };
 
   static actualizarProyecto = async (req: Request, res: Response) => {
-    const { id } = req.params;
     try {
-      const proyecto = await Proyecto.findById(id);
-      if (!proyecto) {
-        const error = new Error("Proyecto no encontrado");
-        return res.status(404).json({ error: error.message });
-      }
+      req.proyecto.nombreCliente = req.body.nombreCliente;
+      req.proyecto.nombreProyecto = req.body.nombreProyecto;
+      req.proyecto.descripcion = req.body.descripcion;
 
-      if (proyecto.propietario.toString() !== req.usuario.id.toString()) {
-        const error = new Error(
-          "Solo el propietario puede actualizar un proyecto"
-        );
-        return res.status(404).json({ error: error.message });
-      }
-
-      proyecto.nombreCliente = req.body.nombreCliente;
-      proyecto.nombreProyecto = req.body.nombreProyecto;
-      proyecto.descripcion = req.body.descripcion;
-
-      await proyecto.save();
+      await req.proyecto.save();
       res.send("Proyecto actualizado");
     } catch (error) {
       console.log(error);
@@ -81,22 +67,8 @@ export class ProyectoController {
   };
 
   static eliminarProyecto = async (req: Request, res: Response) => {
-    const { id } = req.params;
     try {
-      const proyecto = await Proyecto.findById(id);
-      if (!proyecto) {
-        const error = new Error("Proyecto no encontrado");
-        return res.status(404).json({ error: error.message });
-      }
-
-      if (proyecto.propietario.toString() !== req.usuario.id.toString()) {
-        const error = new Error(
-          "Solo el propietario puede eliminar un proyecto"
-        );
-        return res.status(404).json({ error: error.message });
-      }
-
-      await proyecto.deleteOne();
+      await req.proyecto.deleteOne();
       res.send("Proyecto eliminado");
     } catch (error) {
       console.log(error);
