@@ -77,4 +77,33 @@ router.post(
 
 router.get("/usuario", autenticado, AutenticacionController.usuario);
 
+// Perfil
+router.put(
+  "/perfil",
+  autenticado,
+  body("nombre").notEmpty().withMessage("El nombre es obligatorio"),
+  body("correo").isEmail().withMessage("El correo no es válido"),
+  handleErroresEntrada,
+  AutenticacionController.actualizarPerfil
+);
+
+router.post(
+  "/cambiar-contrasena",
+  autenticado,
+  body("contrasena_actual")
+    .notEmpty()
+    .withMessage("La contraseña actual es obligatoria"),
+  body("contrasena")
+    .isLength({ min: 8 })
+    .withMessage("La contraseña debe tener al menos 8 caracteres"),
+  body("contrasena_confirmacion").custom((value, { req }) => {
+    if (value !== req.body.contrasena) {
+      throw new Error("Las contraseñas no son iguales");
+    }
+    return true;
+  }),
+  handleErroresEntrada,
+  AutenticacionController.actualizarContrasena
+);
+
 export default router;

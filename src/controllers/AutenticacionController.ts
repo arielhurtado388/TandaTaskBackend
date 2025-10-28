@@ -221,4 +221,52 @@ export class AutenticacionController {
   static usuario = async (req: Request, res: Response) => {
     return res.json(req.usuario);
   };
+
+  static actualizarPerfil = async (req: Request, res: Response) => {
+    const { nombre, correo } = req.body;
+
+    const existeUsuario = await Usuario.findOne({ correo });
+
+    if (
+      existeUsuario &&
+      existeUsuario.id.toString() !== req.usuario.id.toString()
+    ) {
+      const error = new Error("El correo ya está registrado");
+      return res.status(409).json({ error: error.message });
+    }
+
+    req.usuario.nombre = nombre;
+    req.usuario.correo = correo;
+
+    try {
+      await req.usuario.save();
+      res.send("Perfil actualizado correctamente");
+    } catch (error) {
+      res.status(500).json({ error: "Hubo un error" });
+    }
+  };
+
+  static actualizarContrasena = async (req: Request, res: Response) => {
+    const { contrasena_actual, contrasena } = req.body;
+
+    const usuario = await Usuario.findById(req.usuario.id);
+
+    const esContrasenaCorrecta = await revisarContrasena(
+      contrasena_actual,
+      usuario.contrasena
+    );
+
+    if (!esContrasenaCorrecta) {
+      const error = new Error("La contraseñá actual es incorrecta");
+      return res.status(401).json({ error: error.message });
+    }
+
+    try {
+      usuario.contrasena = await hashContrasena(contrasena);
+      await usuario.save();
+      res.send("La contraseña se modificó correctamente");
+    } catch (error) {
+      res.status(500).json({ error: "Hubo un error" });
+    }
+  };
 }
