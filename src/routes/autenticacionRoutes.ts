@@ -106,4 +106,14 @@ router.post(
   AutenticacionController.actualizarContrasena
 );
 
+router.post(
+  "/verificar-contrasena",
+  autenticado,
+  body("contrasena")
+    .notEmpty()
+    .withMessage("La contraseña actual es obligatoria"),
+  handleErroresEntrada,
+  AutenticacionController.verificarContrasena
+);
+
 export default router;

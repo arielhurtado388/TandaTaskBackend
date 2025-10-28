@@ -257,7 +257,7 @@ export class AutenticacionController {
     );
 
     if (!esContrasenaCorrecta) {
-      const error = new Error("La contraseñá actual es incorrecta");
+      const error = new Error("La contraseña actual es incorrecta");
       return res.status(401).json({ error: error.message });
     }
 
@@ -268,5 +268,23 @@ export class AutenticacionController {
     } catch (error) {
       res.status(500).json({ error: "Hubo un error" });
     }
+  };
+
+  static verificarContrasena = async (req: Request, res: Response) => {
+    const { contrasena } = req.body;
+
+    const usuario = await Usuario.findById(req.usuario.id);
+
+    const esContrasenaCorrecta = await revisarContrasena(
+      contrasena,
+      usuario.contrasena
+    );
+
+    if (!esContrasenaCorrecta) {
+      const error = new Error("La contraseña es incorrecta");
+      return res.status(401).json({ error: error.message });
+    }
+
+    res.send("Contraseña correcta");
   };
 }
