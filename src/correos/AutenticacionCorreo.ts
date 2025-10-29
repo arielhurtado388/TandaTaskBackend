@@ -9,7 +9,7 @@ interface ICorreo {
 export class AutenticacionCorreo {
   static enviarCorreoConfirmacion = async (usuario: ICorreo) => {
     const info = await transporter.sendMail({
-      from: "TandaTask <cuentas@tandatask.com>",
+      from: "TandaTask <noreply@arielhurtado.online>",
       to: usuario.correo,
       subject: "Confirma tu cuenta",
       text: "Confirma tu cuenta",
@@ -28,7 +28,7 @@ export class AutenticacionCorreo {
 
   static enviarCorreoResetearContrasena = async (usuario: ICorreo) => {
     const info = await transporter.sendMail({
-      from: "TandaTask <cuentas@tandatask.com>",
+      from: "TandaTask <noreply@arielhurtado.online>",
       to: usuario.correo,
       subject: "Reestablece tu contraseña",
       text: "Reestablece tu contraseña",
